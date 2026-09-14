@@ -1,0 +1,18 @@
+# Cara pakai
+
+Extract isi zip ini LANGSUNG ke root folder project Laravel kamu (E:\laragon\www\qr-saas),
+pilih "timpa/overwrite". Ini akan menimpa/menambah 3 file:
+
+- resources/css/app.css        (ditimpa penuh — sudah termasuk semua CSS lama + tambahan .login-form)
+- app/Providers/AppServiceProvider.php   (ditimpa — nambah binding logout)
+- app/Http/Controllers/Auth/AdminLogoutController.php   (file baru)
+
+Setelah itu jalankan:
+
+    npm run build   (atau restart `npm run dev` kalau masih jalan, supaya CSS baru ke-compile)
+    php artisan config:clear
+    php artisan route:clear
+
+Test:
+1. Buka /login — form Email/Password sekarang harus ada kotak input & tombol hijau "Masuk".
+2. Login sebagai admin, masuk ke /admin, klik Sign Out — harus mendarat di /login (bukan /admin/login).
