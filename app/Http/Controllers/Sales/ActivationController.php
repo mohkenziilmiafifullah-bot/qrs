@@ -40,8 +40,17 @@ class ActivationController extends Controller
         $data = $request->validate([
             'code' => ['required', 'string', 'exists:qrs,code'],
             'merchant_name' => ['required', 'string', 'max:255'],
-            'target_url' => ['required', 'url'],
+            'google_place_id' => ['nullable', 'string', 'max:255', 'required_without:target_url'],
+            'target_url' => ['nullable', 'url', 'required_without:google_place_id'],
         ]);
+
+        // Prefer the Google Place ID: it lets the QR jump straight to the
+        // "write a review" star-rating popup instead of the plain Maps page.
+        // A manually pasted target_url (legacy flow) is kept as a fallback
+        // for merchants without a discoverable Google Business listing.
+        $targetUrl = ! empty($data['google_place_id'])
+            ? 'https://search.google.com/local/writereview?placeid='.$data['google_place_id']
+            : $data['target_url'];
 
         $sales = $request->user();
         $fee = self::ACTIVATION_FEE;
@@ -56,7 +65,7 @@ class ActivationController extends Controller
             return back()->withErrors(['code' => 'QR Code ini sudah diaktivasi sebelumnya.']);
         }
 
-        DB::transaction(function () use ($sales, $qr, $data, $fee) {
+        DB::transaction(function () use ($sales, $qr, $data, $fee, $targetUrl) {
             $sales->decrement('wallet_balance', $fee);
 
             WalletTransaction::create([
@@ -72,7 +81,8 @@ class ActivationController extends Controller
             $qr->update([
                 'sales_id' => $sales->id,
                 'merchant_name' => $data['merchant_name'],
-                'target_url' => $data['target_url'],
+                'google_place_id' => $data['google_place_id'] ?? null,
+                'target_url' => $targetUrl,
                 'status' => 'active',
                 'activated_at' => now(),
             ]);

@@ -13,7 +13,7 @@ class Qr extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code', 'sales_id', 'merchant_name', 'target_url', 'status', 'batch_reference', 'activated_at',
+        'code', 'sales_id', 'merchant_name', 'google_place_id', 'target_url', 'status', 'batch_reference', 'activated_at',
     ];
 
     protected function casts(): array

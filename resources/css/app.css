@@ -95,3 +95,25 @@
 .login-submit:disabled { opacity: .55; }
 .login-register { margin: 20px 0 0; color: #72877f; font-size: 13px; text-align: center; }
 .login-register a { color: #087866; font-weight: 800; }
+
+/* --- Place ID finder & review-link UI (activation form) --- */
+.field-hint { margin: -7px 0 0; color: #7a8d86; font-size: 11px; line-height: 1.5; }
+.finder-trigger { min-height: 44px; padding: 0 16px; border: 1px dashed #087866; border-radius: 12px; color: #087866; background: #f2faf7; font-size: 13px; font-weight: 800; text-align: center; }
+.review-link-preview { padding: 10px 12px; border-radius: 12px; color: #38584e; background: #eff8f4; font-size: 11px; }
+.review-link-preview span { display: block; margin-bottom: 3px; color: #749086; }
+.review-link-preview b { display: block; font-weight: 700; word-break: break-all; }
+.link-toggle { padding: 0; border: 0; background: none; color: #087866; font-size: 12px; font-weight: 800; text-align: left; text-decoration: underline; }
+.finder-modal-body { padding: 22px; }
+.finder-modal-body h2 { margin: 4px 0 14px; color: #183b32; font-size: 18px; }
+.finder-steps { margin: 0 0 16px; padding-left: 18px; color: #466158; font-size: 13px; line-height: 1.65; }
+.finder-open-cta { display: flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 14px; color: #fff; background: #087866; font-size: 14px; font-weight: 800; text-align: center; text-decoration: none; }
+.finder-fallback { margin: 12px 0 0; color: #7a8d86; font-size: 11px; line-height: 1.6; text-align: center; }
+.finder-fallback a { color: #087866; font-weight: 800; }
+.finder-done { width: 100%; margin-top: 16px; }
+.sales-dark .finder-trigger { border-color: #64bda4; color: #aee6d5; background: #1f4d40; }
+.sales-dark .review-link-preview { color: #cde2d8; background: #1f4d40; }
+.sales-dark .review-link-preview span { color: #aec6bb; }
+.sales-dark .link-toggle,.sales-dark .finder-fallback a { color: #aee6d5; }
+.sales-dark .field-hint,.sales-dark .finder-fallback { color: #a5c0b4; }
+.sales-dark .finder-modal-body h2 { color: #edf8f3; }
+.sales-dark .finder-steps { color: #c2d8ce; }

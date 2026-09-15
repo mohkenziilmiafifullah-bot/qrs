@@ -26,7 +26,13 @@ class QrResource extends Resource
                 ->searchable()
                 ->label('Sales Pemilik'),
             Forms\Components\TextInput::make('merchant_name')->maxLength(255),
-            Forms\Components\TextInput::make('target_url')->url()->maxLength(65535),
+            Forms\Components\TextInput::make('google_place_id')
+                ->label('Google Place ID')
+                ->helperText('Jika diisi, target_url akan otomatis dibentuk sebagai link review saat disimpan ulang lewat form aktivasi Sales.')
+                ->maxLength(255),
+            Forms\Components\TextInput::make('target_url')
+                ->label('Target URL (review / maps link)')
+                ->url()->maxLength(65535),
             Forms\Components\Select::make('status')
                 ->options([
                     'unassigned' => 'Unassigned',
