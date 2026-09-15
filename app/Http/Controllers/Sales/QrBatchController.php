@@ -126,13 +126,12 @@ class QrBatchController extends Controller
         ]);
 
         $pdf = Pdf::loadView('pdf.qr-batch', [
-            'items' => $items,
+            'qrs' => $items,
             'paperSize' => $paperSize,
-        ])->setPaper(strtolower($paperSize));
+        ])->setPaper(strtolower($paperSize), 'portrait');
 
         return $pdf->download("qr-batch-{$batchReference}.pdf");
     }
-
     private function buildQrImage(string $code, int $size): string
     {
         $builder = new Builder(
