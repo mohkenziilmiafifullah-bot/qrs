@@ -117,3 +117,19 @@
 .sales-dark .field-hint,.sales-dark .finder-fallback { color: #a5c0b4; }
 .sales-dark .finder-modal-body h2 { color: #edf8f3; }
 .sales-dark .finder-steps { color: #c2d8ce; }
+
+/* --- WhatsApp monthly report button (History page) --- */
+.report-row { flex-wrap: wrap; }
+.report-actions { flex: 0 0 100%; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #edf2ef; }
+.report-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; border: 0; border-radius: 12px; font-size: 12px; font-weight: 800; }
+.report-btn.is-ready { color: #fff; background: #087866; }
+.report-btn.is-locked { color: #98a2ac; background: #eceef1; cursor: not-allowed; }
+.report-note { margin: 6px 0 0; color: #7a8d86; font-size: 11px; line-height: 1.5; }
+.sales-dark .report-actions { border-color: #315447; }
+.sales-dark .report-btn.is-locked { color: #7c8f88; background: #1c352d; }
+.sales-dark .report-note { color: #a5c0b4; }
+.report-filter-tabs { display: flex; gap: 8px; margin-top: 14px; overflow-x: auto; padding-bottom: 2px; }
+.report-filter-tab { flex: 0 0 auto; padding: 8px 14px; border: 1px solid #dce8e2; border-radius: 999px; color: #466158; background: #fff; font-size: 12px; font-weight: 800; white-space: nowrap; }
+.report-filter-tab.is-active { color: #fff; border-color: #087866; background: #087866; }
+.sales-dark .report-filter-tab { border-color: #386252; color: #c2d8ce; background: #18352c; }
+.sales-dark .report-filter-tab.is-active { color: #10221d; border-color: #64bda4; background: #64bda4; }

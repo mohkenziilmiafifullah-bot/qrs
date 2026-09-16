@@ -13,6 +13,7 @@ export default function ActivationForm({ qr, fee, walletBalance }) {
     const { data, setData, post, processing, errors } = useForm({
         code: qr.code,
         merchant_name: '',
+        phone_number: '',
         google_place_id: '',
         target_url: '',
     });
@@ -62,6 +63,22 @@ export default function ActivationForm({ qr, fee, walletBalance }) {
                     />
                 </label>
                 {errors.merchant_name && <p className="form-error">{errors.merchant_name}</p>}
+
+                <label>
+                    Nomor WhatsApp toko
+                    <input
+                        type="tel"
+                        className="sales-input"
+                        value={data.phone_number}
+                        onChange={(e) => setData('phone_number', e.target.value)}
+                        placeholder="Contoh: 0812-3456-7890"
+                        required
+                    />
+                </label>
+                <p className="field-hint">
+                    Dipakai untuk mengirim laporan performa QR bulanan lewat WhatsApp.
+                </p>
+                {errors.phone_number && <p className="form-error">{errors.phone_number}</p>}
 
                 {!useManualLink && (
                     <>

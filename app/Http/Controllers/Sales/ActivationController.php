@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Sales;
 use App\Http\Controllers\Controller;
 use App\Models\Qr;
 use App\Models\WalletTransaction;
+use App\Support\PhoneNumber;
+use App\Support\WhatsappReportBuilder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,9 +42,12 @@ class ActivationController extends Controller
         $data = $request->validate([
             'code' => ['required', 'string', 'exists:qrs,code'],
             'merchant_name' => ['required', 'string', 'max:255'],
+            'phone_number' => ['required', 'string', 'min:10', 'max:15'],
             'google_place_id' => ['nullable', 'string', 'max:255', 'required_without:target_url'],
             'target_url' => ['nullable', 'url', 'required_without:google_place_id'],
         ]);
+
+        $phoneNumber = PhoneNumber::sanitizeToWhatsapp($data['phone_number']);
 
         // Prefer the Google Place ID: it lets the QR jump straight to the
         // "write a review" star-rating popup instead of the plain Maps page.
@@ -65,7 +70,7 @@ class ActivationController extends Controller
             return back()->withErrors(['code' => 'QR Code ini sudah diaktivasi sebelumnya.']);
         }
 
-        DB::transaction(function () use ($sales, $qr, $data, $fee, $targetUrl) {
+        DB::transaction(function () use ($sales, $qr, $data, $fee, $targetUrl, $phoneNumber) {
             $sales->decrement('wallet_balance', $fee);
 
             WalletTransaction::create([
@@ -81,6 +86,7 @@ class ActivationController extends Controller
             $qr->update([
                 'sales_id' => $sales->id,
                 'merchant_name' => $data['merchant_name'],
+                'phone_number' => $phoneNumber,
                 'google_place_id' => $data['google_place_id'] ?? null,
                 'target_url' => $targetUrl,
                 'status' => 'active',
@@ -93,11 +99,40 @@ class ActivationController extends Controller
 
     public function history(Request $request): Response
     {
-        $qrs = $request->user()->qrs()
-            ->where('status', 'active')
-            ->latest('activated_at')
-            ->paginate(20);
+        $filter = $request->query('report_filter', 'all');
 
-        return Inertia::render('Sales/History', ['qrs' => $qrs]);
+        $query = $request->user()->qrs()->where('status', 'active');
+
+        if ($filter === 'sent') {
+            $query->whereNotNull('last_report_sent_at');
+        } elseif ($filter === 'ready') {
+            $query->whereNull('last_report_sent_at')
+                ->where('activated_at', '<=', now()->subDays(30));
+        } elseif ($filter === 'waiting') {
+            $query->whereNull('last_report_sent_at')
+                ->where('activated_at', '>', now()->subDays(30));
+        }
+
+        $qrs = $query->latest('activated_at')->paginate(20)->withQueryString();
+
+        $qrs->getCollection()->transform(function (Qr $qr) {
+            $analytics = WhatsappReportBuilder::analytics($qr);
+            $canSendReport = WhatsappReportBuilder::canSendReport($qr);
+
+            return array_merge($qr->toArray(), [
+                'analytics' => $analytics,
+                'can_send_report' => $canSendReport,
+                'already_sent' => $qr->last_report_sent_at !== null,
+                'eligible_date' => $canSendReport ? null : WhatsappReportBuilder::eligibleDate($qr),
+                'wa_report_link' => $canSendReport && $qr->phone_number
+                    ? WhatsappReportBuilder::waLink($qr, $analytics)
+                    : null,
+            ]);
+        });
+
+        return Inertia::render('Sales/History', [
+            'qrs' => $qrs,
+            'reportFilter' => $filter,
+        ]);
     }
 }

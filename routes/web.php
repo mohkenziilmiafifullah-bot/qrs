@@ -5,6 +5,7 @@ use App\Http\Controllers\Sales\ActivationController;
 use App\Http\Controllers\Sales\DashboardController;
 use App\Http\Controllers\Sales\DepositController;
 use App\Http\Controllers\Sales\QrBatchController;
+use App\Http\Controllers\Sales\ReportController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,6 +31,8 @@ Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->grou
     Route::get('/activate/{code}', [ActivationController::class, 'form'])->name('activate.form');
     Route::post('/activate', [ActivationController::class, 'activate'])->name('activate.store');
     Route::get('/history', [ActivationController::class, 'history'])->name('history');
+
+    Route::post('/qr/{qr}/mark-report-sent', [ReportController::class, 'markSent'])->name('qr.report.mark-sent');
 
     Route::get('/deposit', [DepositController::class, 'create'])->name('deposit.create');
     Route::post('/deposit', [DepositController::class, 'store'])->name('deposit.store');
