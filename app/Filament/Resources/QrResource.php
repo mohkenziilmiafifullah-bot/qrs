@@ -32,6 +32,7 @@ class QrResource extends Resource
                 ->maxLength(255),
             Forms\Components\TextInput::make('target_url')
                 ->label('Target URL (review / maps link)')
+                ->helperText('QR dan tag NFC memakai code yang sama, jadi kalau lokasi toko pindah, cukup update field ini saja — perubahan langsung berlaku untuk keduanya (cache redirect otomatis ke-refresh saat disimpan).')
                 ->url()->maxLength(65535),
             Forms\Components\Select::make('status')
                 ->options([
@@ -48,6 +49,13 @@ class QrResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')->searchable()->copyable(),
+                Tables\Columns\TextColumn::make('nfc_link')
+                    ->label('Link NFC')
+                    ->state(fn (Qr $record) => route('qr.redirect', $record->code) . '?src=nfc')
+                    ->copyable()
+                    ->copyMessage('Link NFC disalin — tinggal paste ke app NFC Tools.')
+                    ->limit(28)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('sales.name')->label('Sales')->searchable(),
                 Tables\Columns\TextColumn::make('merchant_name')->searchable()->limit(30),
                 Tables\Columns\BadgeColumn::make('status')

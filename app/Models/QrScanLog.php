@@ -13,7 +13,7 @@ class QrScanLog extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'qr_id', 'ip_address', 'user_agent', 'device_type', 'browser', 'scanned_at',
+        'qr_id', 'ip_address', 'user_agent', 'device_type', 'browser', 'source', 'scanned_at',
     ];
 
     protected function casts(): array

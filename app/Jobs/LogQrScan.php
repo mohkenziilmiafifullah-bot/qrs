@@ -19,6 +19,7 @@ class LogQrScan implements ShouldQueue
         public ?string $ip,
         public ?string $userAgent,
         public string $scannedAt,
+        public string $source = 'qr',
     ) {}
 
     public function handle(): void
@@ -32,6 +33,7 @@ class LogQrScan implements ShouldQueue
             'user_agent' => $this->userAgent,
             'device_type' => $agent->isMobile() ? 'mobile' : ($agent->isTablet() ? 'tablet' : 'desktop'),
             'browser' => $agent->browser() ?: null,
+            'source' => $this->source === 'nfc' ? 'nfc' : 'qr',
             'scanned_at' => $this->scannedAt,
         ]);
     }

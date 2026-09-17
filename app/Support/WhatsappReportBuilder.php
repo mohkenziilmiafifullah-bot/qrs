@@ -20,12 +20,16 @@ class WhatsappReportBuilder
      */
     public static function analytics(Qr $qr): array
     {
-        $scans = $qr->scanLogs()->get(['scanned_at']);
+        $scans = $qr->scanLogs()->get(['scanned_at', 'source']);
 
         return [
             'total_scan' => $scans->count(),
             'peak_hours' => self::peakHours($scans),
             'top_day' => self::topDay($scans),
+            // Additive: breakdown by tap source. Existing keys above are
+            // untouched, so any code still reading only those three keeps working.
+            'total_scan_qr' => $scans->where('source', 'qr')->count(),
+            'total_scan_nfc' => $scans->where('source', 'nfc')->count(),
         ];
     }
 

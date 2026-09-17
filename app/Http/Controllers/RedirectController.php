@@ -26,11 +26,17 @@ class RedirectController extends Controller
             return redirect()->route('qr.inactive');
         }
 
+        // Physical QR stickers link to plain /q/{code}, so they keep resolving
+        // to 'qr' with zero changes needed. NFC tags are written with an extra
+        // ?src=nfc so the exact same redirect engine can tell them apart.
+        $source = $request->query('src') === 'nfc' ? 'nfc' : 'qr';
+
         LogQrScan::dispatch(
             $qr['id'],
             $request->ip(),
             $request->userAgent(),
             now()->toDateTimeString(),
+            $source,
         );
 
         return redirect()->away($qr['target_url']);

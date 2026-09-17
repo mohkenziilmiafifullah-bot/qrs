@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import SalesLayout from '@/Layouts/SalesLayout';
 import { Link, router } from '@inertiajs/react';
 
@@ -12,6 +13,36 @@ function sendReport(qr) {
     if (!qr.wa_report_link) return;
     window.open(qr.wa_report_link, '_blank', 'noopener,noreferrer');
     router.post(`/sales/qr/${qr.id}/mark-report-sent`, {}, { preserveScroll: true, preserveState: true });
+}
+
+function NfcCopyButton({ link }) {
+    const [copied, setCopied] = useState(false);
+
+    if (!link) return null;
+
+    async function copyLink() {
+        try {
+            await navigator.clipboard.writeText(link);
+        } catch (e) {
+            // Fallback untuk browser lama / konteks non-https lokal.
+            const textarea = document.createElement('textarea');
+            textarea.value = link;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    }
+
+    return (
+        <button type="button" className="nfc-copy-btn" onClick={copyLink}>
+            {copied ? '✓ Tersalin!' : 'Salin Link NFC'}
+        </button>
+    );
 }
 
 function ReportButton({ qr }) {
@@ -66,7 +97,10 @@ export default function History({ qrs, reportFilter }) {
                                 <small>{qr.code} · {new Date(qr.activated_at).toLocaleString('id-ID')}</small>
                             </div>
                             <span className="active-pill">Aktif</span>
-                            <div className="report-actions"><ReportButton qr={qr} /></div>
+                            <div className="report-actions">
+                                <ReportButton qr={qr} />
+                                <NfcCopyButton link={qr.nfc_link} />
+                            </div>
                         </article>
                     ))
                 )}

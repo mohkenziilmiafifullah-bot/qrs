@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Cetak Batch QR Code</title>
     <style>
-        /* Konfigurasi Ukuran Kertas Dinamis */
+        /* Konfigurasi Ukuran Kertas Dinamis (landscape untuk template baru) */
         @page {
             margin: 0;
-            size: {{ strtolower($paperSize ?? 'a6') }} portrait;
+            size: {{ strtolower($paperSize ?? 'a6') }} landscape;
         }
 
         * {
@@ -45,13 +45,15 @@
             z-index: 1;
         }
 
-        /* Container QR Code tepat di dalam kotak putih template */
+        /* Container QR Code tepat di dalam kotak putih template baru (landscape).
+           Koordinat diambil dari deteksi otomatis kotak putih pada tamplate.jfif
+           (2528x1686px): x 851-1674, y 267-1072. */
         .qr-wrapper {
             position: absolute;
-            top: 37.8%;
-            left: 23.8%;
-            width: 52.4%;
-            height: 35.2%;
+            top: 18.84%;
+            left: 33.66%;
+            width: 32.56%;
+            height: 47.75%;
             z-index: 2;
             display: table;
             text-align: center;
@@ -77,7 +79,7 @@
     @foreach($qrs as $qr)
         <div class="card-container {{ !$loop->last ? 'page-break' : '' }}">
             <!-- Background Template -->
-            <img src="{{ public_path('images/qr-template.png') }}" class="bg-template" alt="Template Background">
+            <img src="{{ public_path('images/qr-template-nfc.jpg') }}" class="bg-template" alt="Template Background">
 
             <!-- QR Code Data URI dari Endroid -->
             <div class="qr-wrapper">

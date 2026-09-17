@@ -127,6 +127,10 @@ class ActivationController extends Controller
                 'wa_report_link' => $canSendReport && $qr->phone_number
                     ? WhatsappReportBuilder::waLink($qr, $analytics)
                     : null,
+                // Link siap-salin buat ditulis ke tag NFC lewat app seperti NFC Tools.
+                // Sama persis dengan link redirect QR, ditambah ?src=nfc supaya
+                // analytics-nya kebaca beda sumber (lihat RedirectController).
+                'nfc_link' => route('qr.redirect', $qr->code) . '?src=nfc',
             ]);
         });
 
